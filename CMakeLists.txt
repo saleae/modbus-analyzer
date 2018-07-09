@@ -22,9 +22,9 @@ add_library(modbus_analyzer SHARED ${SOURCES})
 target_link_libraries(modbus_analyzer PRIVATE Saleae::AnalyzerSDK)
 
 if(MSVC)
-    install(TARGETS modbus_analyzer RUNTIME DESTINATION ".")
+    install(TARGETS modbus_analyzer RUNTIME DESTINATION "Analyzers")
 else()
-    install(TARGETS modbus_analyzer LIBRARY DESTINATION ".")
+    install(TARGETS modbus_analyzer LIBRARY DESTINATION "Analyzers")
 endif()
 
 set_post_build_destination(modbus_analyzer)
