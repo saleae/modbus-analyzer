@@ -26,3 +26,5 @@ if(MSVC)
 else()
     install(TARGETS modbus_analyzer LIBRARY DESTINATION ".")
 endif()
+
+set_post_build_destination(modbus_analyzer)
