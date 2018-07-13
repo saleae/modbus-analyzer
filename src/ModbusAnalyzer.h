@@ -10,7 +10,7 @@
 #include <string.h>
 
 class ModbusAnalyzerSettings;
-class ANALYZER_EXPORT ModbusAnalyzer : public Analyzer2
+class ModbusAnalyzer : public Analyzer2
 {
 public:
 	ModbusAnalyzer();
