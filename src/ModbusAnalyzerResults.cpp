@@ -496,7 +496,7 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
 		}
 
 		if(frame.mFlags&FLAG_CHECKSUM_ERROR)
-			sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+			strcat( result_str, "%s (Invalid Checksum!)" );
 
 		AddResultString( result_str );
 	}
@@ -955,7 +955,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
 				}
 
 				if(frame.mFlags&FLAG_CHECKSUM_ERROR)
-					sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+					strcat( result_str, "%s (Invalid Checksum!)" );
 
 				ss << time_str << "," << result_str << std::endl;
 	
@@ -1381,7 +1381,7 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
         }
 
         if(frame.mFlags&FLAG_CHECKSUM_ERROR)
-            sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+            strcat( result_str, "%s (Invalid Checksum!)" );
 
         AddTabularText( result_str );
     }
