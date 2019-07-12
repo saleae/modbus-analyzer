@@ -22,7 +22,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
 
 
 	mParityInterface.reset( new AnalyzerSettingInterfaceNumberList() );
-	mParityInterface->SetTitleAndTooltip( "", "Specify None, Even, or Odd Parity." );
+	mParityInterface->SetTitleAndTooltip( "Parity Bit", "Specify None, Even, or Odd Parity" );
 	mParityInterface->AddNumber( ModbusAnalyzerEnums::ParityAndStopbits::EvenOne, "Even Parity Bit (default)", "" );
 	mParityInterface->AddNumber( ModbusAnalyzerEnums::ParityAndStopbits::OddOne, "Odd Parity Bit", "" );
 	mParityInterface->AddNumber( ModbusAnalyzerEnums::ParityAndStopbits::NoneTwo, "No Parity Bit, 2 stop bits", "" );
@@ -38,22 +38,22 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
 
 	mModbusModeInterface.reset( new AnalyzerSettingInterfaceNumberList() );
 	mModbusModeInterface->SetTitleAndTooltip( "Modbus Mode", "Specify which mode of Modbus this is" );
-	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUMaster, "Modbus/RTU - Master", "(messages are transmitted in binary)" );
-	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUSlave, "Modbus/RTU - Slave", "(messages are transmitted in binary)" );
-	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIMaster, "Modbus/ASCII - Master", "(messages are transmitted in ASCII-readable format)" );
-	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIISlave, "Modbus/ASCII - Slave", "(messages are transmitted in ASCII-readable format)");
+	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUMaster, "RTU - Master", "Messages are transmitted in binary" );
+	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUSlave, "RTU - Slave", "Messages are transmitted in binary" );
+	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIMaster, "ASCII - Master", "Messages are transmitted in ASCII-readable format" );
+	mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIISlave, "ASCII - Slave", "Messages are transmitted in ASCII-readable format");
 	mModbusModeInterface->SetNumber( mModbusMode );
 
 
 	mBitRateInterface.reset( new AnalyzerSettingInterfaceInteger() );
-	mBitRateInterface->SetTitleAndTooltip( "Bit Rate (Bits/s)",  "Specify the bit rate in bits per second." );
+	mBitRateInterface->SetTitleAndTooltip( "Bit Rate (Bits/s)",  "" );
 	mBitRateInterface->SetMax( 6000000 );
 	mBitRateInterface->SetMin( 1 );
 	mBitRateInterface->SetInteger( mBitRate );
 
 
 	mInvertedInterface.reset( new AnalyzerSettingInterfaceNumberList() );
-	mInvertedInterface->SetTitleAndTooltip( "", "Specify if the serial signal is inverted" );
+	mInvertedInterface->SetTitleAndTooltip( "Signal Inversion", "Specify if the serial signal is inverted" );
 	mInvertedInterface->AddNumber( false, "Non Inverted (Standard)", "" );
 	mInvertedInterface->AddNumber( true, "Inverted", "" );
 	mInvertedInterface->SetNumber( mInverted );
