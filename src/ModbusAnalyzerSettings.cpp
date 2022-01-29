@@ -37,9 +37,12 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     mModbusModeInterface->SetTitleAndTooltip( "Modbus Mode", "Specify which mode of Modbus this is" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUClient, "RTU - Client", "Messages are transmitted in binary" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUServer, "RTU - Server", "Messages are transmitted in binary" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUBoth, "RTU - Client & Server", "Messages are transmitted in binary" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIClient, "ASCII - Client",
                                      "Messages are transmitted in ASCII-readable format" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIServer, "ASCII - Server",
+                                     "Messages are transmitted in ASCII-readable format" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIBoth, "ASCII - Client & Server",
                                      "Messages are transmitted in ASCII-readable format" );
     mModbusModeInterface->SetNumber( mModbusMode );
 

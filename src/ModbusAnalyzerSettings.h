@@ -17,8 +17,10 @@ namespace ModbusAnalyzerEnums // Note: There is another definition of enum Mode 
     {
         ModbusRTUClient,
         ModbusRTUServer,
+        ModbusRTUBoth, // Client and Server
         ModbusASCIIClient,
         ModbusASCIIServer,
+        ModbusASCIIBoth,
         Normal,
         MpModeMsbZeroMeansAddress,
         MpModeMsbOneMeansAddress
