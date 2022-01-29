@@ -16,7 +16,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
       mParity( ModbusAnalyzerEnums::ParityAndStopbits::EvenOne ),
       mInverted( false ),
       mUseAutobaud( false ),
-      mModbusMode( ModbusAnalyzerEnums::ModbusRTUMaster )
+      mModbusMode( ModbusAnalyzerEnums::ModbusRTUClient )
 {
     mParityInterface.reset( new AnalyzerSettingInterfaceNumberList() );
     mParityInterface->SetTitleAndTooltip( "Parity Bit", "Specify None, Even, or Odd Parity" );
@@ -35,11 +35,14 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
 
     mModbusModeInterface.reset( new AnalyzerSettingInterfaceNumberList() );
     mModbusModeInterface->SetTitleAndTooltip( "Modbus Mode", "Specify which mode of Modbus this is" );
-    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUMaster, "RTU - Master", "Messages are transmitted in binary" );
-    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUSlave, "RTU - Slave", "Messages are transmitted in binary" );
-    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIMaster, "ASCII - Master",
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUClient, "RTU - Client", "Messages are transmitted in binary" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUServer, "RTU - Server", "Messages are transmitted in binary" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUBoth, "RTU - Client & Server", "Messages are transmitted in binary" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIClient, "ASCII - Client",
                                      "Messages are transmitted in ASCII-readable format" );
-    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIISlave, "ASCII - Slave",
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIServer, "ASCII - Server",
+                                     "Messages are transmitted in ASCII-readable format" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIBoth, "ASCII - Client & Server",
                                      "Messages are transmitted in ASCII-readable format" );
     mModbusModeInterface->SetNumber( mModbusMode );
 

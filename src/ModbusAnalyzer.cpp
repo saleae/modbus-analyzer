@@ -93,166 +93,19 @@ void ModbusAnalyzer::WorkerThread()
         mModbus->AdvanceToNextEdge();
 
     // if Modbus isn't selected, use the other code untouched
-    if( mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUMaster && mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUSlave &&
-        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIMaster &&
-        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIISlave )
+    if( mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUClient &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUServer &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUBoth &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIClient &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIServer &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIBoth )
     {
         AnalyzerHelpers::Assert( "The Modbus analyzer can't be used in a non-modbus mode." );
-        ////todo: delete all this code.
-        // for( ; ; )
-        //{
-
-        //	//we're starting high.  (we'll assume that we're not in the middle of a byte.
-        //	mModbus->AdvanceToNextEdge();
-
-        //	//we're now at the beginning of the start bit.  We can start collecting the data.
-        //	U64 frame_starting_sample = mModbus->GetSampleNumber();
-
-        //	U64 data = 0;
-        //	bool parity_error = false;
-        //	bool framing_error = false;
-        //	bool mp_is_address = false;
-        //
-        //	DataBuilder data_builder;
-        //	data_builder.Reset( &data, mSettings->mShiftOrder, num_bits );
-        //	U64 marker_location = frame_starting_sample;
-
-        //	for( U32 i=0; i<num_bits; i++ )
-        //	{
-        //		mModbus->Advance( mSampleOffsets[i] );
-        //		data_builder.AddBit( mModbus->GetBitState() );
-
-        //		marker_location += mSampleOffsets[i];
-        //		mResults->AddMarker( marker_location, AnalyzerResults::Dot, mSettings->mInputChannel );
-        //	}
-
-        //	if( mSettings->mInverted == true )
-        //		data = (~data) & bit_mask;
-
-        //	if( mSettings->mModbusMode != ModbusAnalyzerEnums::Normal )
-        //	{
-        //		//extract the MSB
-        //		U64 msb = data >> (num_bits - 1);
-        //		msb &= 0x1;
-        //		if( mSettings->mModbusMode == ModbusAnalyzerEnums::MpModeMsbOneMeansAddress )
-        //		{
-        //			if( msb == 0x0 )
-        //				mp_is_address = false;
-        //			else
-        //				mp_is_address = true;
-        //		}
-        //		if( mSettings->mModbusMode == ModbusAnalyzerEnums::MpModeMsbZeroMeansAddress )
-        //		{
-        //			if( msb == 0x0 )
-        //				mp_is_address = true;
-        //			else
-        //				mp_is_address = false;
-        //		}
-        //		//now remove the msb.
-        //		data &= ( bit_mask >> 1 );
-        //	}
-        //
-        //	parity_error = false;
-
-        //	if( mSettings->mParity != AnalyzerEnums::None )
-        //	{
-        //		mModbus->Advance( mParityBitOffset );
-        //		bool is_even = AnalyzerHelpers::IsEven( AnalyzerHelpers::GetOnesCount( data ) );
-
-        //		if( mSettings->mParity == AnalyzerEnums::Even )
-        //		{
-        //			if( is_even == true )
-        //			{
-        //				if( mModbus->GetBitState() != mBitLow ) //we expect a low bit, to keep the parity even.
-        //					parity_error = true;
-        //			}else
-        //			{
-        //				if( mModbus->GetBitState() != mBitHigh ) //we expect a high bit, to force parity even.
-        //					parity_error = true;
-        //			}
-        //		}else  //if( mSettings->mParity == AnalyzerEnums::Odd )
-        //		{
-        //			if( is_even == false )
-        //			{
-        //				if( mModbus->GetBitState() != mBitLow ) //we expect a low bit, to keep the parity odd.
-        //					parity_error = true;
-        //			}else
-        //			{
-        //				if( mModbus->GetBitState() != mBitHigh ) //we expect a high bit, to force parity odd.
-        //					parity_error = true;
-        //			}
-        //		}
-
-        //		marker_location += mParityBitOffset;
-        //		mResults->AddMarker( marker_location, AnalyzerResults::Square, mSettings->mInputChannel );
-        //	}
-
-        //	//now we must dermine if there is a framing error.
-        //	framing_error = false;
-
-        //	mModbus->Advance( mStartOfStopBitOffset );
-
-        //	if( mModbus->GetBitState() != mBitHigh )
-        //	{
-        //		framing_error = true;
-        //	}else
-        //	{
-        //		U32 num_edges = mModbus->Advance( mEndOfStopBitOffset );
-        //		if( num_edges != 0 )
-        //			framing_error = true;
-        //	}
-
-        //	if( framing_error == true )
-        //	{
-        //		marker_location += mStartOfStopBitOffset;
-        //		mResults->AddMarker( marker_location, AnalyzerResults::ErrorX, mSettings->mInputChannel );
-
-        //		if( mEndOfStopBitOffset != 0 )
-        //		{
-        //			marker_location += mEndOfStopBitOffset;
-        //			mResults->AddMarker( marker_location, AnalyzerResults::ErrorX, mSettings->mInputChannel );
-        //		}
-        //	}
-
-        //	//ok now record the value!
-        //	//note that we're not using the mData2 or mType fields for anything, so we won't bother to set them.
-        //	Frame frame;
-        //	frame.mStartingSampleInclusive = frame_starting_sample;
-        //	frame.mEndingSampleInclusive = mModbus->GetSampleNumber();
-        //	frame.mData1 = data;
-        //	frame.mFlags = 0;
-        //	if( parity_error == true )
-        //		frame.mFlags |= PARITY_ERROR_FLAG | DISPLAY_AS_ERROR_FLAG;
-
-        //	if( framing_error == true )
-        //		frame.mFlags |= FRAMING_ERROR_FLAG | DISPLAY_AS_ERROR_FLAG;
-
-        //	if( mp_is_address == true )
-        //		frame.mFlags |= MP_MODE_ADDRESS_FLAG;
-
-        //	if( mp_is_address == true )
-        //		mResults->CommitPacketAndStartNewPacket();
-
-        //	mResults->AddFrame( frame );
-
-        //	mResults->CommitResults();
-
-        //	ReportProgress( frame.mEndingSampleInclusive );
-        //	CheckIfThreadShouldExit();
-
-        //	if( framing_error == true )  //if we're still low, let's fix that for the next round.
-        //	{
-        //		if( mModbus->GetBitState() == mBitLow )
-        //			mModbus->AdvanceToNextEdge();
-        //	}
-        //}
     }
     // Analyze using Modbus extension
-    else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+    else
     {
+        bool processingResponse = false;
         for( ;; )
         {
             Frame frame;
@@ -267,8 +120,9 @@ void ModbusAnalyzer::WorkerThread()
             U64 Checksum;
 
             // if analyzer is in ASCII mode, we need to make sure we catch the ':' byte as the start of frame, RTU just uses silence
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth )
             {
                 char rawdata = 0x00;
                 do
@@ -286,13 +140,15 @@ void ModbusAnalyzer::WorkerThread()
             // Then comes the Function Code
             U64 funccode = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-            // Now we'll process the rest of the data based on whether the transmission is coming from the master or a slave device
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster )
+            // Now we'll process the rest of the data based on whether the transmission is coming from the client or a server device
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+                ((mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth) && !processingResponse) )
             {
                 frame.mFlags = FLAG_REQUEST_FRAME;
 
-                // It's a master device doing the talking
+                // It's (possibly) a client device doing the talking (if mModBusMode is a BOTH, then not sure yet )
                 switch( funccode )
                 {
                     // use fall through to process similar requests with the same code
@@ -310,7 +166,8 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     Payload2[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -370,7 +227,8 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -420,7 +278,8 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -534,7 +393,8 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -650,7 +510,8 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                        ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -799,7 +660,8 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                        ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -992,7 +854,8 @@ void ModbusAnalyzer::WorkerThread()
                     Payload3[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     Payload3[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1046,7 +909,7 @@ void ModbusAnalyzer::WorkerThread()
                     }
                     break;
                 case FUNCCODE_READWRITE_MULTIPLE_REGISTERS:
-                    // code this section and master is done.. wooo
+                    // code this section and client is done.. wooo
 
                     // Read Starting Address
                     Payload1[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1068,7 +931,8 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1191,7 +1055,8 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1239,9 +1104,14 @@ void ModbusAnalyzer::WorkerThread()
                     break;
                 }
             }
-            else
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
+                ((mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth) && processingResponse))
             {
-                // slave mode
+                // clear out flags in case something was already set trying to parse as a client
+                frame.mFlags = frame.mData1 = frame.mData2 = 0;
+                // server mode
                 // check if it's a normal response or a Nak/Error
                 if( funccode & 0x80 )
                 {
@@ -1254,7 +1124,8 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1300,7 +1171,7 @@ void ModbusAnalyzer::WorkerThread()
                     // it's a valid response
                     frame.mFlags = FLAG_RESPONSE_FRAME;
 
-                    // It's a master device doing the talking
+                    // It's a client device doing the talking
                     switch( funccode )
                     {
                         // use fall through to process similar requests with the same code
@@ -1316,7 +1187,8 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1425,7 +1297,8 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1536,7 +1409,8 @@ void ModbusAnalyzer::WorkerThread()
                         Payload2[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload2[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1591,7 +1465,8 @@ void ModbusAnalyzer::WorkerThread()
                         Payload2[ 0 ] = 0x00;
                         Payload2[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1643,7 +1518,8 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1756,7 +1632,8 @@ void ModbusAnalyzer::WorkerThread()
                         Payload4[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload4[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                            ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1876,7 +1753,8 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2054,7 +1932,8 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2248,7 +2127,8 @@ void ModbusAnalyzer::WorkerThread()
                         Payload3[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload3[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -2313,7 +2193,8 @@ void ModbusAnalyzer::WorkerThread()
                         Payload1[ 0 ] = 0x00;
                         Payload1[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2425,14 +2306,15 @@ void ModbusAnalyzer::WorkerThread()
             }
 
             // in ASCII mode, the frame ends with a \n \r termination, in RTU mode, just silence
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer  ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth )
             {
                 char StopFrame[ 2 ];
                 StopFrame[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                 StopFrame[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
             }
-
+                processingResponse = !processingResponse;
             // the frame ends here
             frame.mEndingSampleInclusive = ending_frame;
             mResults->AddFrame( frame );
@@ -2524,7 +2406,9 @@ void DestroyAnalyzer( Analyzer* analyzer )
 
 U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_starting_sample, U64& frame_ending_sample )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
     {
         mModbus->AdvanceToNextEdge();
 
@@ -2533,7 +2417,6 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
 
         U64 data = 0;
         bool parity_error = false;
-        bool framing_error = false;
         bool mp_is_address = false;
 
         DataBuilder data_builder;
@@ -2599,7 +2482,6 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
             if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
             {
                 mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-                framing_error = true;
             }
         }
 
@@ -2608,7 +2490,8 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
         if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
         {
             mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-            framing_error = true;
+        } else {
+            mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::Square, mSettings->mInputChannel );
         }
 
         frame_ending_sample = mModbus->GetSampleNumber();
@@ -2626,7 +2509,6 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
 
         U64 data = 0;
         bool parity_error = false;
-        bool framing_error = false;
         bool mp_is_address = false;
 
         DataBuilder data_builder;
@@ -2692,7 +2574,6 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
             if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
             {
                 mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-                framing_error = true;
             }
         }
 
@@ -2700,7 +2581,8 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
         if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
         {
             mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-            framing_error = true;
+        } else {
+            mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::Square, mSettings->mInputChannel );
         }
 
         if( data == ':' || data == '\n' || data == '\r' )
@@ -2717,7 +2599,6 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
 
             data = 0;
             parity_error = false;
-            framing_error = false;
             mp_is_address = false;
 
             data_builder.Reset( &data, mSettings->mShiftOrder, num_bits );
@@ -2781,15 +2662,17 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
                 if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
                 {
                     mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-                    framing_error = true;
-                }
+                } 
             }
 
             mModbus->Advance( mStartOfStopBitOffset );
             if( mModbus->GetBitState() != mBitHigh ) // we expect a high bit, for the stop bit
             {
                 mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::ErrorDot, mSettings->mInputChannel );
-                framing_error = true;
+            }
+            else
+            {
+                mResults->AddMarker( mModbus->GetSampleNumber(), AnalyzerResults::Square, mSettings->mInputChannel );
             }
 
             frame_ending_sample = mModbus->GetSampleNumber();
@@ -2802,57 +2685,13 @@ U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_st
 
 int ModbusAnalyzer::ASCII2INT( char value )
 {
-    switch( value )
-    {
-    case '0':
-        return 0;
-        break;
-    case '1':
-        return 1;
-        break;
-    case '2':
-        return 2;
-        break;
-    case '3':
-        return 3;
-        break;
-    case '4':
-        return 4;
-        break;
-    case '5':
-        return 5;
-        break;
-    case '6':
-        return 6;
-        break;
-    case '7':
-        return 7;
-        break;
-    case '8':
-        return 8;
-        break;
-    case '9':
-        return 9;
-        break;
-    case 'A':
-        return 0xA;
-        break;
-    case 'B':
-        return 0xB;
-        break;
-    case 'C':
-        return 0xC;
-        break;
-    case 'D':
-        return 0xD;
-        break;
-    case 'E':
-        return 0xE;
-        break;
-    case 'F':
-        return 0xF;
-        break;
-    default:
+    if (value >= 0x30 && value <=0x39) { // 0-9
+        return value - 0x30;
+    } else if (value >= 0x41 && value <= 0x46) { // A-F
+        return value - 0x37;
+    }else if (value >= 0x61 && value <= 0x66) { // a-f
+        return value - 0x57;
+    } else { // error condition.
         return 0;
     }
 }
@@ -2862,8 +2701,6 @@ U16 ModbusAnalyzer::update_CRC( U16 crc, U8 c )
     U16 tmp, short_c;
 
     short_c = 0x00ff & ( U16 )c;
-
-    // if ( ! crc_tab16_init ) init_crc16_tab();
 
     tmp = crc ^ short_c;
     crc = ( crc >> 8 ) ^ crc_tab16[ tmp & 0xff ];

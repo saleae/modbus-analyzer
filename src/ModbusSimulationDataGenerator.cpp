@@ -55,10 +55,10 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
 
     while( mModbusSimulationData.GetCurrentSampleNumber() < adjusted_largest_sample_requested )
     {
-        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster ||
-            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster )
+        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient )
         {
-            // Simulate the Master Device on a Modbus channel
+            // Simulate the Client Device on a Modbus channel
 
             SendGenericRequest( 0x01, 0x01, 0x0013, 0x0013 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
@@ -172,10 +172,10 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
             SendReadFIFOQueueRequest( 0x01, 0x04DE );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
         }
-        else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave ||
-                 mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+        else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+                 mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer )
         {
-            // Simulate a Slave Device on a Modbus/RTU channel
+            // Simulate a Server Device on a Modbus/RTU channel
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .075 ) );
 
             U8 bytes[ 3 ] = { 0xCD, 0x6B, 0x05 };
@@ -273,9 +273,9 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
             // This one is device specific, but here's a sample implementation for decode purposes
-            // SlaveID is "Saleae" followed by 0xFF (ON)
-            U8 SlaveID[] = { 0x53, 0x61, 0x6C, 0x65, 0x61, 0x65, 0xFF };
-            SendReportSlaveIDResponse( 0x01, 0x07, SlaveID );
+            // ServerID is "Saleae" followed by 0xFF (ON)
+            U8 ServerID[] = { 0x53, 0x61, 0x6C, 0x65, 0x61, 0x65, 0xFF };
+            SendReportServerIDResponse( 0x01, 0x07, ServerID );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
             // 0x14 here
@@ -606,7 +606,7 @@ void ModbusSimulationDataGenerator::CreateModbusByte( U64 value )
 
 void ModbusSimulationDataGenerator::SendGenericRequest( U8 DeviceID, U8 FuncCode, U16 StartingAddress, U16 Quantity )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -703,7 +703,7 @@ void ModbusSimulationDataGenerator::SendGenericRequest( U8 DeviceID, U8 FuncCode
 
 void ModbusSimulationDataGenerator::SendGenDiagnosticRequest( U8 DeviceID, U8 FuncCode )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -761,7 +761,7 @@ void ModbusSimulationDataGenerator::SendGenDiagnosticRequest( U8 DeviceID, U8 Fu
 
 void ModbusSimulationDataGenerator::SendMaskWriteRegisterRequest( U8 DeviceID, U16 ReferenceAddress, U16 And_Mask, U16 Or_Mask )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -876,7 +876,7 @@ void ModbusSimulationDataGenerator::SendMaskWriteRegisterRequest( U8 DeviceID, U
 
 void ModbusSimulationDataGenerator::SendReadFIFOQueueRequest( U8 DeviceID, U16 FIFOAddress )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -954,7 +954,7 @@ void ModbusSimulationDataGenerator::SendReadFIFOQueueRequest( U8 DeviceID, U16 F
 
 void ModbusSimulationDataGenerator::SendRequest_Diagnostics( U8 DeviceID, U16 SubFunction, U16 Data )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1051,7 +1051,7 @@ void ModbusSimulationDataGenerator::SendRequest_Diagnostics( U8 DeviceID, U16 Su
 void ModbusSimulationDataGenerator::SendWriteMultipleCoilsRequest( U8 DeviceID, U16 StartingAddress, U16 Quantity, U8 ByteCount,
                                                                    U8 Values[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1183,7 +1183,7 @@ void ModbusSimulationDataGenerator::SendWriteMultipleCoilsRequest( U8 DeviceID, 
 void ModbusSimulationDataGenerator::SendWriteMultipleRegistersRequest( U8 DeviceID, U16 StartingAddress, U16 Quantity, U8 ByteCount,
                                                                        U16 Values[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1324,7 +1324,7 @@ void ModbusSimulationDataGenerator::SendReadFileRecordRequest( U8 DeviceID, U8 B
                                                                U16 SubReqFileNumbers[], U16 SubReqRecordNumbers[],
                                                                U16 SubReqRecordLengths[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1476,7 +1476,7 @@ void ModbusSimulationDataGenerator::SendWriteFileRecordRequest( U8 DeviceID, U8 
                                                                 U16 SubReqFileNumbers[], U16 SubReqRecordNumbers[],
                                                                 U16 SubReqRecordLengths[], U16 SubReqRecordData[ 1 ][ 3 ] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1680,7 +1680,7 @@ void ModbusSimulationDataGenerator::SendReadWriteMultipleRegisters( U8 DeviceID,
                                                                     U16 WriteStartingAddress, U16 QuantityToWrite, U8 WriteByteCount,
                                                                     U16 Values[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1858,7 +1858,7 @@ void ModbusSimulationDataGenerator::SendReadWriteMultipleRegisters( U8 DeviceID,
 
 void ModbusSimulationDataGenerator::SendGenericResponse( U8 DeviceID, U8 FuncCode, U8 ByteCount, U8 Status[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -1953,7 +1953,7 @@ void ModbusSimulationDataGenerator::SendGenericResponse( U8 DeviceID, U8 FuncCod
 
 void ModbusSimulationDataGenerator::SendGeneric2Response( U8 DeviceID, U8 FuncCode, U8 ByteCount, U16 Values[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2054,7 +2054,7 @@ void ModbusSimulationDataGenerator::SendGeneric2Response( U8 DeviceID, U8 FuncCo
 
 void ModbusSimulationDataGenerator::SendReadExceptionStatusResponse( U8 DeviceID, U8 FuncCode, U8 Data )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2123,7 +2123,7 @@ void ModbusSimulationDataGenerator::SendReadExceptionStatusResponse( U8 DeviceID
 
 void ModbusSimulationDataGenerator::SendReadFIFOQueueResponse( U8 DeviceID, U16 ByteCount, U16 FIFOCount, U16 Values[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2260,7 +2260,7 @@ void ModbusSimulationDataGenerator::SendReadFIFOQueueResponse( U8 DeviceID, U16 
 void ModbusSimulationDataGenerator::SendGetCommEventLogResponse( U8 DeviceID, U8 ByteCount, U16 Status, U16 EventCount, U16 MessageCount,
                                                                  U8 Events[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2420,9 +2420,9 @@ void ModbusSimulationDataGenerator::SendGetCommEventLogResponse( U8 DeviceID, U8
     }
 }
 
-void ModbusSimulationDataGenerator::SendReportSlaveIDResponse( U8 DeviceID, U8 ByteCount, U8 Data[] )
+void ModbusSimulationDataGenerator::SendReportServerIDResponse( U8 DeviceID, U8 ByteCount, U8 Data[] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2517,7 +2517,7 @@ void ModbusSimulationDataGenerator::SendReportSlaveIDResponse( U8 DeviceID, U8 B
 void ModbusSimulationDataGenerator::SendWriteFileRecordResponse( U8 DeviceID, U8 ByteCount, U8 SubReqRecordLengths[],
                                                                  U8 SubReqReferenceTypes[], U16 SubReqRecordData[ 2 ][ 2 ] )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
@@ -2673,7 +2673,7 @@ void ModbusSimulationDataGenerator::SendWriteFileRecordResponse( U8 DeviceID, U8
 
 void ModbusSimulationDataGenerator::SendException( U8 DeviceID, U8 FuncCode, U8 ExceptionCode )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         CreateModbusByte( DeviceID );
         mModbusSimulationData.Advance( mClockGenerator.AdvanceByHalfPeriod( 10.0 ) ); // insert 10 bit-periods of idle
