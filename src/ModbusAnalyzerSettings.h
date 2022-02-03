@@ -11,14 +11,14 @@
 
 namespace ModbusAnalyzerEnums // Note: There is another definition of enum Mode in the cpp file.
 {
-    // enum Mode { Normal, MpModeMsbZeroMeansAddress, MpModeMsbOneMeansAddress, ModbusRTUMaster, ModbusRTUSlave, ModbusASCIIMaster,
-    // ModbusASCIISlave };
+    // enum Mode { Normal, MpModeMsbZeroMeansAddress, MpModeMsbOneMeansAddress, ModbusRTUClient, ModbusRTUServer, ModbusASCIIClient,
+    // ModbusASCIIServer };
     enum Mode
     {
-        ModbusRTUMaster,
-        ModbusRTUSlave,
-        ModbusASCIIMaster,
-        ModbusASCIISlave,
+        ModbusRTUClient,
+        ModbusRTUServer,
+        ModbusASCIIClient,
+        ModbusASCIIServer,
         Normal,
         MpModeMsbZeroMeansAddress,
         MpModeMsbOneMeansAddress

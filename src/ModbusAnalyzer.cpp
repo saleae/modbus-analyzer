@@ -93,9 +93,9 @@ void ModbusAnalyzer::WorkerThread()
         mModbus->AdvanceToNextEdge();
 
     // if Modbus isn't selected, use the other code untouched
-    if( mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUMaster && mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUSlave &&
-        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIMaster &&
-        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIISlave )
+    if( mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUClient && mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusRTUServer &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIClient &&
+        mSettings->mModbusMode != ModbusAnalyzerEnums::ModbusASCIIServer )
     {
         AnalyzerHelpers::Assert( "The Modbus analyzer can't be used in a non-modbus mode." );
         ////todo: delete all this code.
@@ -248,10 +248,10 @@ void ModbusAnalyzer::WorkerThread()
         //}
     }
     // Analyze using Modbus extension
-    else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+    else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer )
     {
         for( ;; )
         {
@@ -267,8 +267,8 @@ void ModbusAnalyzer::WorkerThread()
             U64 Checksum;
 
             // if analyzer is in ASCII mode, we need to make sure we catch the ':' byte as the start of frame, RTU just uses silence
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer )
             {
                 char rawdata = 0x00;
                 do
@@ -286,13 +286,13 @@ void ModbusAnalyzer::WorkerThread()
             // Then comes the Function Code
             U64 funccode = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-            // Now we'll process the rest of the data based on whether the transmission is coming from the master or a slave device
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster )
+            // Now we'll process the rest of the data based on whether the transmission is coming from the client or a server device
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient )
             {
                 frame.mFlags = FLAG_REQUEST_FRAME;
 
-                // It's a master device doing the talking
+                // It's a client device doing the talking
                 switch( funccode )
                 {
                     // use fall through to process similar requests with the same code
@@ -310,7 +310,7 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     Payload2[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -362,7 +362,7 @@ void ModbusAnalyzer::WorkerThread()
                 case FUNCCODE_READ_EXCEPTION_STATUS:
                 case FUNCCODE_GET_COM_EVENT_COUNTER:
                 case FUNCCODE_GET_COM_EVENT_LOG:
-                case FUNCCODE_REPORT_SLAVE_ID:
+                case FUNCCODE_REPORT_SERVER_ID:
 
                     Payload1[ 0 ] = 0x00;
                     Payload1[ 1 ] = 0x00;
@@ -370,7 +370,7 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -420,7 +420,7 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -534,7 +534,7 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -650,7 +650,7 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                        ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -799,7 +799,7 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                        ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -992,7 +992,7 @@ void ModbusAnalyzer::WorkerThread()
                     Payload3[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     Payload3[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1046,7 +1046,7 @@ void ModbusAnalyzer::WorkerThread()
                     }
                     break;
                 case FUNCCODE_READWRITE_MULTIPLE_REGISTERS:
-                    // code this section and master is done.. wooo
+                    // code this section and client is done.. wooo
 
                     // Read Starting Address
                     Payload1[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1068,7 +1068,7 @@ void ModbusAnalyzer::WorkerThread()
                     ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                     ByteCount[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                        ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1191,7 +1191,7 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1241,7 +1241,7 @@ void ModbusAnalyzer::WorkerThread()
             }
             else
             {
-                // slave mode
+                // server mode
                 // check if it's a normal response or a Nak/Error
                 if( funccode & 0x80 )
                 {
@@ -1254,7 +1254,7 @@ void ModbusAnalyzer::WorkerThread()
                     Payload2[ 0 ] = 0x00;
                     Payload2[ 1 ] = 0x00;
 
-                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                     {
                         RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1300,7 +1300,7 @@ void ModbusAnalyzer::WorkerThread()
                     // it's a valid response
                     frame.mFlags = FLAG_RESPONSE_FRAME;
 
-                    // It's a master device doing the talking
+                    // It's a client device doing the talking
                     switch( funccode )
                     {
                         // use fall through to process similar requests with the same code
@@ -1316,7 +1316,7 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1425,7 +1425,7 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1536,7 +1536,7 @@ void ModbusAnalyzer::WorkerThread()
                         Payload2[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload2[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1591,7 +1591,7 @@ void ModbusAnalyzer::WorkerThread()
                         Payload2[ 0 ] = 0x00;
                         Payload2[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -1632,7 +1632,7 @@ void ModbusAnalyzer::WorkerThread()
                                            ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( RecChecksum[ 1 ] << 8 ) + RecChecksum[ 0 ];
                         }
                         break;
-                    case FUNCCODE_REPORT_SLAVE_ID:
+                    case FUNCCODE_REPORT_SERVER_ID:
 
                         Payload1[ 0 ] = 0x00;
                         Payload1[ 1 ] = 0x00;
@@ -1643,7 +1643,7 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1756,7 +1756,7 @@ void ModbusAnalyzer::WorkerThread()
                         Payload4[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload4[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 0 ] << 40 ) + ( Payload1[ 1 ] << 32 ) +
                                            ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -1876,7 +1876,7 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2054,7 +2054,7 @@ void ModbusAnalyzer::WorkerThread()
                         ByteCount[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         ByteCount[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2248,7 +2248,7 @@ void ModbusAnalyzer::WorkerThread()
                         Payload3[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                         Payload3[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             RecChecksum[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
                             RecChecksum[ 1 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -2313,7 +2313,7 @@ void ModbusAnalyzer::WorkerThread()
                         Payload1[ 0 ] = 0x00;
                         Payload1[ 1 ] = 0x00;
 
-                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+                        if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
                         {
                             frame.mData1 = ( devaddr << 56 ) + ( funccode << 48 ) + ( Payload1[ 1 ] << 40 ) + ( Payload1[ 0 ] << 32 ) +
                                            ( Payload2[ 1 ] << 24 ) + ( Payload2[ 0 ] << 16 ) + ( ByteCount[ 1 ] << 8 ) + ByteCount[ 0 ];
@@ -2425,8 +2425,8 @@ void ModbusAnalyzer::WorkerThread()
             }
 
             // in ASCII mode, the frame ends with a \n \r termination, in RTU mode, just silence
-            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIMaster ||
-                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIISlave )
+            if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
+                mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer )
             {
                 char StopFrame[ 2 ];
                 StopFrame[ 0 ] = GetNextByteModbus( num_bits, bit_mask, starting_frame, ending_frame );
@@ -2524,7 +2524,7 @@ void DestroyAnalyzer( Analyzer* analyzer )
 
 U64 ModbusAnalyzer::GetNextByteModbus( U32 num_bits, U64 bit_mask, U64& frame_starting_sample, U64& frame_ending_sample )
 {
-    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUMaster || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUSlave )
+    if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         mModbus->AdvanceToNextEdge();
 

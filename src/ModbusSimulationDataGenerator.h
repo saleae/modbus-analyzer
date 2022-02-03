@@ -57,7 +57,7 @@ class ModbusSimulationDataGenerator
     // 0x07 Read Exception Status
     // 0x0B Get Comm Event Counter
     // 0x0C Get Comm Event Log
-    // 0x11 Report Slave ID
+    // 0x11 Report Server ID
     void SendGenDiagnosticRequest( U8 DeviceID, U8 FuncCode );
 
     // this function generates the request for the Mask Write Register (0x16) command
@@ -94,7 +94,7 @@ class ModbusSimulationDataGenerator
     void SendReadExceptionStatusResponse( U8 DeviceID, U8 FuncCode, U8 Data );
     void SendReadFIFOQueueResponse( U8 DeviceID, U16 ByteCount, U16 FIFOCount, U16 Values[] );
     void SendGetCommEventLogResponse( U8 DeviceID, U8 ByteCount, U16 Status, U16 EventCount, U16 MessageCount, U8 Events[] );
-    void SendReportSlaveIDResponse( U8 DeviceID, U8 ByteCount, U8 Data[] );
+    void SendReportServerIDResponse( U8 DeviceID, U8 ByteCount, U8 Data[] );
     // forced a constant value for the array size, no reason to implement dynamic memory for this, overkill for purpose of simulation
     void SendWriteFileRecordResponse( U8 DeviceID, U8 ByteCount, U8 SubReqRecordLengths[], U8 SubReqReferenceTypes[],
                                       U16 SubReqRecordData[ 2 ][ 2 ] );
