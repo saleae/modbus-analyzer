@@ -1026,7 +1026,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                 case FUNCCODE_MASK_WRITE_REGISTER:
                     sprintf( result_str, "%s, Mask Write Register [ACK] (%s), RefAddr: %s, And_Mask: %s, OR_Mask: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, Payload3Str, ChecksumStr );
-                    break;   
+                    break;
                 case FUNCCODE_READWRITE_MULTIPLE_REGISTERS:
                     sprintf( result_str, "%s, Read/Write Multiple Registers [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
                              ChecksumStr );
@@ -1546,7 +1546,15 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
                          ChecksumStr );
                 break;
+            case FUNCCODE_READ_FILE_RECORD:
+                sprintf( result_str, "DeviceID: %s, Func: Read File Record [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
+                         ChecksumStr );
                 break;
+            case FUNCCODE_WRITE_FILE_RECORD:
+                sprintf( result_str, "DeviceID: %s, Func: Write File Record [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
+                         ChecksumStr );
+                break;
+            case FUNCCODE_MASK_WRITE_REGISTER:
                 sprintf( result_str,
                          "DeviceID: %s, Func: Mask Write Register [ACK] (%s), RefAddr: %s, And_Mask: %s, OR_Mask: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, Payload3Str, ChecksumStr );
