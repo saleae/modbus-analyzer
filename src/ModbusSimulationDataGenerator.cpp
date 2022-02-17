@@ -112,16 +112,16 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
             SendRequest_Diagnostics( 0x01, RETURN_BUS_EXCEPTION_ERROR_COUNT, 0x0000 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_MESSAGE_COUNT, 0x0000 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_MESSAGE_COUNT, 0x0000 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_NO_RESPONSE_COUNT, 0x0000 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_NO_RESPONSE_COUNT, 0x0000 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_NAK_COUNT, 0x0000 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_NAK_COUNT, 0x0000 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_BUSY_COUNT, 0x0000 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_BUSY_COUNT, 0x0000 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
             SendRequest_Diagnostics( 0x01, RETURN_BUS_CHAR_OVERRUN_COUNT, 0x0000 );
@@ -238,16 +238,16 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
             SendRequest_Diagnostics( 0x01, RETURN_BUS_EXCEPTION_ERROR_COUNT, 0x0003 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_MESSAGE_COUNT, 0x0002 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_MESSAGE_COUNT, 0x0002 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_NO_RESPONSE_COUNT, 0x0001 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_NO_RESPONSE_COUNT, 0x0001 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_NAK_COUNT, 0x0002 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_NAK_COUNT, 0x0002 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
-            SendRequest_Diagnostics( 0x01, RETURN_SLAVE_BUSY_COUNT, 0x0003 );
+            SendRequest_Diagnostics( 0x01, RETURN_SERVER_BUSY_COUNT, 0x0003 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
 
             SendRequest_Diagnostics( 0x01, RETURN_BUS_CHAR_OVERRUN_COUNT, 0x0004 );

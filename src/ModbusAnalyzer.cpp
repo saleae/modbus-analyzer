@@ -219,7 +219,7 @@ void ModbusAnalyzer::WorkerThread()
                 case FUNCCODE_READ_EXCEPTION_STATUS:
                 case FUNCCODE_GET_COM_EVENT_COUNTER:
                 case FUNCCODE_GET_COM_EVENT_LOG:
-                case FUNCCODE_REPORT_SLAVE_ID:
+                case FUNCCODE_REPORT_SERVER_ID:
 
                     Payload1[ 0 ] = 0x00;
                     Payload1[ 1 ] = 0x00;
@@ -1507,7 +1507,7 @@ void ModbusAnalyzer::WorkerThread()
                                            ( Payload2[ 0 ] << 24 ) + ( Payload2[ 1 ] << 16 ) + ( RecChecksum[ 1 ] << 8 ) + RecChecksum[ 0 ];
                         }
                         break;
-                    case FUNCCODE_REPORT_SLAVE_ID:
+                    case FUNCCODE_REPORT_SERVER_ID:
 
                         Payload1[ 0 ] = 0x00;
                         Payload1[ 1 ] = 0x00;

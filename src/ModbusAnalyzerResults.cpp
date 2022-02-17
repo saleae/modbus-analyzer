@@ -174,25 +174,25 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_MESSAGE_COUNT:
+                case RETURN_SERVER_MESSAGE_COUNT:
                     AddResultString( "Diagnostics" );
                     AddResultString( "Diagnostics - Server Msg Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                case RETURN_SERVER_NO_RESPONSE_COUNT:
                     AddResultString( "Diagnostics" );
                     AddResultString( "Diagnostics - Server No Resp Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NAK_COUNT:
+                case RETURN_SERVER_NAK_COUNT:
                     AddResultString( "Diagnostics" );
                     AddResultString( "Diagnostics - Server NAK Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_BUSY_COUNT:
+                case RETURN_SERVER_BUSY_COUNT:
                     AddResultString( "Diagnostics" );
                     AddResultString( "Diagnostics - Server Busy Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
@@ -232,7 +232,7 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers (%s), StartAddr: %s, Qty: %s, ByteCount: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 AddResultString( "Report Server ID" );
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID (%s), ChkSum: %s", DeviceAddrStr, FunctionCodeStr, ChecksumStr );
                 break;
@@ -374,26 +374,26 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
                              "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_MESSAGE_COUNT:
+                case RETURN_SERVER_MESSAGE_COUNT:
                     AddResultString( "Diagnostics [ACK]" );
                     AddResultString( "Diagnostics [ACK] - Server Msg Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                case RETURN_SERVER_NO_RESPONSE_COUNT:
                     AddResultString( "Diagnostics [ACK]" );
                     AddResultString( "Diagnostics [ACK] - Server No Resp Cnt" );
                     sprintf( result_str,
                              "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NAK_COUNT:
+                case RETURN_SERVER_NAK_COUNT:
                     AddResultString( "Diagnostics [ACK]" );
                     AddResultString( "Diagnostics [ACK] - Server NAK Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_BUSY_COUNT:
+                case RETURN_SERVER_BUSY_COUNT:
                     AddResultString( "Diagnostics [ACK]" );
                     AddResultString( "Diagnostics [ACK] - Server Busy Cnt" );
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
@@ -436,7 +436,7 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers [ACK] (%s), StartAddr: %s, Qty: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 AddResultString( "Report Server ID [ACK]" );
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
                          ChecksumStr );
@@ -539,7 +539,7 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers [NACK] (%s), ExceptionCode: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 AddResultString( "Report Server ID [NACK]" );
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID [NACK] (%s), ExceptionCode: %s, ChkSum: %s", DeviceAddrStr,
                          FunctionCodeStr, Payload1Str, ChecksumStr );
@@ -601,7 +601,7 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
         }
 
         if( frame.mFlags & FLAG_CHECKSUM_ERROR )
-            sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+            strcat( result_str, " (Invalid Checksum!)" );
 
         AddResultString( result_str );
     }
@@ -834,19 +834,19 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                         sprintf( result_str, "%s, Diagnostics (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_MESSAGE_COUNT:
+                    case RETURN_SERVER_MESSAGE_COUNT:
                         sprintf( result_str, "%s, Diagnostics (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                    case RETURN_SERVER_NO_RESPONSE_COUNT:
                         sprintf( result_str, "%s, Diagnostics (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_NAK_COUNT:
+                    case RETURN_SERVER_NAK_COUNT:
                         sprintf( result_str, "%s, Diagnostics (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_BUSY_COUNT:
+                    case RETURN_SERVER_BUSY_COUNT:
                         sprintf( result_str, "%s, Diagnostics (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
@@ -874,7 +874,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                     sprintf( result_str, "%s, Write Multiple Registers (%s), StartAddr: %s, Qty: %s, ByteCount: %s", DeviceAddrStr,
                              FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case FUNCCODE_REPORT_SLAVE_ID:
+                case FUNCCODE_REPORT_SERVER_ID:
                     sprintf( result_str, "%s, Report Server ID (%s), ChkSum: %s", DeviceAddrStr, FunctionCodeStr, ChecksumStr );
                     break;
                 case FUNCCODE_READ_FILE_RECORD:
@@ -972,19 +972,19 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s",
                                  DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_MESSAGE_COUNT:
+                    case RETURN_SERVER_MESSAGE_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                    case RETURN_SERVER_NO_RESPONSE_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                                  DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_NAK_COUNT:
+                    case RETURN_SERVER_NAK_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
                                  FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
-                    case RETURN_SLAVE_BUSY_COUNT:
+                    case RETURN_SERVER_BUSY_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
                                  DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
@@ -1014,7 +1014,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                     sprintf( result_str, "%s, Write Multiple Registers [ACK] (%s), StartAddr: %s, Qty: %s, ChkSum: %s", DeviceAddrStr,
                              FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case FUNCCODE_REPORT_SLAVE_ID:
+                case FUNCCODE_REPORT_SERVER_ID:
                     sprintf( result_str, "%s, Report Server ID [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr, ChecksumStr );
                     break;
                 case FUNCCODE_READ_FILE_RECORD:
@@ -1026,7 +1026,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                 case FUNCCODE_MASK_WRITE_REGISTER:
                     sprintf( result_str, "%s, Mask Write Register [ACK] (%s), RefAddr: %s, And_Mask: %s, OR_Mask: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, Payload3Str, ChecksumStr );
-                    break;
+                    break;   
                 case FUNCCODE_READWRITE_MULTIPLE_REGISTERS:
                     sprintf( result_str, "%s, Read/Write Multiple Registers [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
                              ChecksumStr );
@@ -1093,7 +1093,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                     sprintf( result_str, "%s, Write Multiple Registers [NACK] (%s), ExceptionCode: %s, ChkSum: %s", DeviceAddrStr,
                              FunctionCodeStr, Payload1Str, ChecksumStr );
                     break;
-                case FUNCCODE_REPORT_SLAVE_ID:
+                case FUNCCODE_REPORT_SERVER_ID:
                     sprintf( result_str, "%s, Report Server ID [NACK] (%s), ExceptionCode: %s, ChkSum: %s", DeviceAddrStr, FunctionCodeStr,
                              Payload1Str, ChecksumStr );
                     break;
@@ -1142,7 +1142,7 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
             }
 
             if( frame.mFlags & FLAG_CHECKSUM_ERROR )
-                sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+                strcat( result_str, " (Invalid Checksum!)" );
 
             ss << time_str << "," << result_str << std::endl;
 
@@ -1344,19 +1344,19 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_MESSAGE_COUNT:
+                case RETURN_SERVER_MESSAGE_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                case RETURN_SERVER_NO_RESPONSE_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NAK_COUNT:
+                case RETURN_SERVER_NAK_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_BUSY_COUNT:
+                case RETURN_SERVER_BUSY_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
@@ -1386,7 +1386,7 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers (%s), StartAddr: %s, Qty: %s, ByteCount: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID (%s), ChkSum: %s", DeviceAddrStr, FunctionCodeStr, ChecksumStr );
                 break;
             case FUNCCODE_READ_FILE_RECORD:
@@ -1496,20 +1496,20 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                              "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Bus Excpt Err Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_MESSAGE_COUNT:
+                case RETURN_SERVER_MESSAGE_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NO_RESPONSE_COUNT:
+                case RETURN_SERVER_NO_RESPONSE_COUNT:
                     sprintf( result_str,
                              "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_NAK_COUNT:
+                case RETURN_SERVER_NAK_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
-                case RETURN_SLAVE_BUSY_COUNT:
+                case RETURN_SERVER_BUSY_COUNT:
                     sprintf( result_str, "DeviceID: %s, Func: Diagnostics [ACK] (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
                              DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                     break;
@@ -1542,19 +1542,11 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers [ACK] (%s), StartAddr: %s, Qty: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
                          ChecksumStr );
                 break;
-            case FUNCCODE_READ_FILE_RECORD:
-                sprintf( result_str, "DeviceID: %s, Func: Read File Record [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
-                         ChecksumStr );
                 break;
-            case FUNCCODE_WRITE_FILE_RECORD:
-                sprintf( result_str, "DeviceID: %s, Func: Write File Record [ACK] (%s), ByteCount: %s", DeviceAddrStr, FunctionCodeStr,
-                         ChecksumStr );
-                break;
-            case FUNCCODE_MASK_WRITE_REGISTER:
                 sprintf( result_str,
                          "DeviceID: %s, Func: Mask Write Register [ACK] (%s), RefAddr: %s, And_Mask: %s, OR_Mask: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, Payload3Str, ChecksumStr );
@@ -1625,7 +1617,7 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
                 sprintf( result_str, "DeviceID: %s, Func: Write Multiple Registers [NACK] (%s), ExceptionCode: %s, ChkSum: %s",
                          DeviceAddrStr, FunctionCodeStr, Payload1Str, ChecksumStr );
                 break;
-            case FUNCCODE_REPORT_SLAVE_ID:
+            case FUNCCODE_REPORT_SERVER_ID:
                 sprintf( result_str, "DeviceID: %s, Func: Report Server ID [NACK] (%s), ExceptionCode: %s, ChkSum: %s", DeviceAddrStr,
                          FunctionCodeStr, Payload1Str, ChecksumStr );
                 break;
@@ -1674,7 +1666,7 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
         }
 
         if( frame.mFlags & FLAG_CHECKSUM_ERROR )
-            sprintf( result_str, "%s (Invalid Checksum!)", result_str );
+            strcat( result_str, " (Invalid Checksum!)" );
 
         AddTabularText( result_str );
     }
