@@ -16,6 +16,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
       mParity( ModbusAnalyzerEnums::ParityAndStopbits::EvenOne ),
       mInverted( false ),
       mUseAutobaud( false ),
+      mAssumeDataStartsWithResponse( false ),
       mModbusMode( ModbusAnalyzerEnums::ModbusRTUClient )
 {
     mParityInterface.reset( new AnalyzerSettingInterfaceNumberList() );
@@ -59,6 +60,11 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     mInvertedInterface->AddNumber( false, "Non Inverted (Standard)", "" );
     mInvertedInterface->AddNumber( true, "Inverted", "" );
     mInvertedInterface->SetNumber( mInverted );
+
+    mStartsWithResponseInterface.reset( new AnalyzerSettingInterfaceBool() );
+    mStartsWithResponseInterface->SetTitleAndTooltip( "Starts with response", "Specify if the serial signal starts with a response, for client/server decoding" );
+    mStartsWithResponseInterface->SetValue ( mAssumeDataStartsWithResponse );
+
     enum Mode
     {
         Normal,
@@ -73,6 +79,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     AddInterface( mModbusModeInterface.get() );
     AddInterface( mBitRateInterface.get() );
     AddInterface( mInvertedInterface.get() );
+    AddInterface( mStartsWithResponseInterface.get() );
     AddInterface( mParityInterface.get() );
 
 
@@ -106,6 +113,7 @@ bool ModbusAnalyzerSettings::SetSettingsFromInterfaces()
     mParity = ModbusAnalyzerEnums::ParityAndStopbits( U32( mParityInterface->GetNumber() ) );
     // mShiftOrder =  AnalyzerEnums::ShiftOrder( U32( mShiftOrderInterface->GetNumber() ) );
     mInverted = bool( U32( mInvertedInterface->GetNumber() ) );
+    mAssumeDataStartsWithResponse = mStartsWithResponseInterface->GetValue();
     // mUseAutobaud = mUseAutobaudInterface->GetValue();
     mModbusMode = ModbusAnalyzerEnums::Mode( U32( mModbusModeInterface->GetNumber() ) );
 
@@ -124,6 +132,7 @@ void ModbusAnalyzerSettings::UpdateInterfacesFromSettings()
     mParityInterface->SetNumber( mParity );
     // mShiftOrderInterface->SetNumber( mShiftOrder );
     mInvertedInterface->SetNumber( mInverted );
+    mStartsWithResponseInterface->SetValue( mAssumeDataStartsWithResponse );
     // mUseAutobaudInterface->SetValue( mUseAutobaud );
     mModbusModeInterface->SetNumber( mModbusMode );
 }
@@ -182,6 +191,7 @@ const char* ModbusAnalyzerSettings::SaveSettings()
     // text_archive << mParity;
     // text_archive << mShiftOrder;
     text_archive << mInverted;
+    text_archive << mAssumeDataStartsWithResponse;
 
     // text_archive << mUseAutobaud;
 

@@ -105,7 +105,7 @@ void ModbusAnalyzer::WorkerThread()
     // Analyze using Modbus extension
     else
     {
-        bool processingResponse = false;
+        bool processingResponse = mSettings->mAssumeDataStartsWithResponse;
         for( ;; )
         {
             Frame frame;
