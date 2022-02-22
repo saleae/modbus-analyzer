@@ -172,6 +172,10 @@ void ModbusAnalyzerSettings::LoadSettings( const char* settings )
     if( text_archive >> *( U32* )&parity )
         mParity = parity;
 
+    bool assumeStartsWithResponse;
+    if( text_archive >> assumeStartsWithResponse )
+        mAssumeDataStartsWithResponse = assumeStartsWithResponse;
+
 
     ClearChannels();
     AddChannel( mInputChannel, "Modbus", true );
@@ -191,7 +195,6 @@ const char* ModbusAnalyzerSettings::SaveSettings()
     // text_archive << mParity;
     // text_archive << mShiftOrder;
     text_archive << mInverted;
-    text_archive << mAssumeDataStartsWithResponse;
 
     // text_archive << mUseAutobaud;
 
@@ -199,6 +202,7 @@ const char* ModbusAnalyzerSettings::SaveSettings()
 
     // added for 1.2.14
     text_archive << mParity;
+    text_archive << mAssumeDataStartsWithResponse;
 
     return SetReturnString( text_archive.GetString() );
 }
