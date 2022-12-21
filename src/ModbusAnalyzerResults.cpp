@@ -38,8 +38,8 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
         bits_per_transfer--;
 
     if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         char DeviceAddrStr[ 128 ];
         U8 DeviceAddr = ( frame.mData1 & 0xFF00000000000000 ) >> 56;
@@ -968,16 +968,16 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
                                  DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
                     case RETURN_SERVER_MESSAGE_COUNT:
-                        sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
-                                 FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
+                        sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server Msg Cnt (%s), Data: %s, ChkSum: %s",
+                                 DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
                     case RETURN_SERVER_NO_RESPONSE_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server No Resp Cnt (%s), Data: %s, ChkSum: %s",
                                  DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
                     case RETURN_SERVER_NAK_COUNT:
-                        sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s", DeviceAddrStr,
-                                 FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
+                        sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server NAK Cnt (%s), Data: %s, ChkSum: %s",
+                                 DeviceAddrStr, FunctionCodeStr, Payload1Str, Payload2Str, ChecksumStr );
                         break;
                     case RETURN_SERVER_BUSY_COUNT:
                         sprintf( result_str, "%s, Diagnostics [ACK] (%s), SubFunc: Server Busy Cnt (%s), Data: %s, ChkSum: %s",
@@ -1228,8 +1228,8 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
         bits_per_transfer--;
 
     if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
     {
         char DeviceAddrStr[ 128 ];
         U8 DeviceAddr = ( frame.mData1 & 0xFF00000000000000 ) >> 56;
