@@ -39,7 +39,10 @@ void ModbusAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*chan
 
     if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
         mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
     {
         char DeviceAddrStr[ 128 ];
         U8 DeviceAddr = ( frame.mData1 & 0xFF00000000000000 ) >> 56;
@@ -714,8 +717,10 @@ void ModbusAnalyzerResults::GenerateExportFile( const char* file, DisplayBase di
     }
     else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
              mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth ||
              mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
-             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer )
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
+             mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth )
     {
         // Modbus Mode
         ss << "Time [s], DeviceID, Function Code, Message" << std::endl;
@@ -1228,8 +1233,11 @@ void ModbusAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBa
         bits_per_transfer--;
 
     if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIClient ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer ||
-        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient || mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer )
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIServer || 
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth || 
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUClient ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUServer ||
+        mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth )
     {
         char DeviceAddrStr[ 128 ];
         U8 DeviceAddr = ( frame.mData1 & 0xFF00000000000000 ) >> 56;
