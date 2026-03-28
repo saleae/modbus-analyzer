@@ -19,6 +19,8 @@ namespace ModbusAnalyzerEnums // Note: There is another definition of enum Mode 
         ModbusRTUServer,
         ModbusASCIIClient,
         ModbusASCIIServer,
+        ModbusRTUBoth, // Client and Server
+        ModbusASCIIBoth,
         Normal,
         MpModeMsbZeroMeansAddress,
         MpModeMsbOneMeansAddress
@@ -50,6 +52,7 @@ class ModbusAnalyzerSettings : public AnalyzerSettings
     AnalyzerEnums::ShiftOrder mShiftOrder;
     ModbusAnalyzerEnums::ParityAndStopbits mParity;
     bool mInverted;
+    bool mAssumeDataStartsWithResponse;
     bool mUseAutobaud;
     ModbusAnalyzerEnums::Mode mModbusMode;
 
@@ -61,6 +64,7 @@ class ModbusAnalyzerSettings : public AnalyzerSettings
     std::auto_ptr<AnalyzerSettingInterfaceNumberList> mShiftOrderInterface;
     std::auto_ptr<AnalyzerSettingInterfaceNumberList> mParityInterface;
     std::auto_ptr<AnalyzerSettingInterfaceNumberList> mInvertedInterface;
+    std::auto_ptr<AnalyzerSettingInterfaceBool> mStartsWithResponseInterface;
     std::auto_ptr<AnalyzerSettingInterfaceBool> mUseAutobaudInterface;
     std::auto_ptr<AnalyzerSettingInterfaceNumberList> mModbusModeInterface;
 };

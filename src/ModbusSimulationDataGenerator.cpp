@@ -546,6 +546,16 @@ U32 ModbusSimulationDataGenerator::GenerateSimulationData( U64 largest_sample_re
             ModbusSimulationDataGenerator::SendException( 0x01, 0x71, 0x04 );
             mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
         }
+        else if( mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusRTUBoth ||
+            mSettings->mModbusMode == ModbusAnalyzerEnums::ModbusASCIIBoth )
+        {
+            SendGenericRequest( 0x01, 0x01, 0x0013, 0x0013 );
+            mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
+
+            U8 bytes[ 3 ] = { 0xCD, 0x6B, 0x05 };
+            SendGenericResponse( 0x01, 0x01, 0x03, bytes );
+            mModbusSimulationData.Advance( mClockGenerator.AdvanceByTimeS( .125 ) );
+        }
     }
     *simulation_channels = &mModbusSimulationData;
 

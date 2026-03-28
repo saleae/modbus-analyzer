@@ -16,6 +16,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
       mParity( ModbusAnalyzerEnums::ParityAndStopbits::EvenOne ),
       mInverted( false ),
       mUseAutobaud( false ),
+      mAssumeDataStartsWithResponse( false ),
       mModbusMode( ModbusAnalyzerEnums::ModbusRTUClient )
 {
     mParityInterface.reset( new AnalyzerSettingInterfaceNumberList() );
@@ -37,9 +38,12 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     mModbusModeInterface->SetTitleAndTooltip( "Modbus Mode", "Specify which mode of Modbus this is" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUClient, "RTU - Client", "Messages are transmitted in binary" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUServer, "RTU - Server", "Messages are transmitted in binary" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusRTUBoth, "RTU - Client & Server", "Messages are transmitted in binary" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIClient, "ASCII - Client",
                                      "Messages are transmitted in ASCII-readable format" );
     mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIServer, "ASCII - Server",
+                                     "Messages are transmitted in ASCII-readable format" );
+    mModbusModeInterface->AddNumber( ModbusAnalyzerEnums::ModbusASCIIBoth, "ASCII - Client & Server",
                                      "Messages are transmitted in ASCII-readable format" );
     mModbusModeInterface->SetNumber( mModbusMode );
 
@@ -56,6 +60,11 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     mInvertedInterface->AddNumber( false, "Non Inverted (Standard)", "" );
     mInvertedInterface->AddNumber( true, "Inverted", "" );
     mInvertedInterface->SetNumber( mInverted );
+
+    mStartsWithResponseInterface.reset( new AnalyzerSettingInterfaceBool() );
+    mStartsWithResponseInterface->SetTitleAndTooltip( "Starts with response", "Specify if the serial signal starts with a response, for client/server decoding" );
+    mStartsWithResponseInterface->SetValue ( mAssumeDataStartsWithResponse );
+
     enum Mode
     {
         Normal,
@@ -70,6 +79,7 @@ ModbusAnalyzerSettings::ModbusAnalyzerSettings()
     AddInterface( mModbusModeInterface.get() );
     AddInterface( mBitRateInterface.get() );
     AddInterface( mInvertedInterface.get() );
+    AddInterface( mStartsWithResponseInterface.get() );
     AddInterface( mParityInterface.get() );
 
 
@@ -103,6 +113,7 @@ bool ModbusAnalyzerSettings::SetSettingsFromInterfaces()
     mParity = ModbusAnalyzerEnums::ParityAndStopbits( U32( mParityInterface->GetNumber() ) );
     // mShiftOrder =  AnalyzerEnums::ShiftOrder( U32( mShiftOrderInterface->GetNumber() ) );
     mInverted = bool( U32( mInvertedInterface->GetNumber() ) );
+    mAssumeDataStartsWithResponse = mStartsWithResponseInterface->GetValue();
     // mUseAutobaud = mUseAutobaudInterface->GetValue();
     mModbusMode = ModbusAnalyzerEnums::Mode( U32( mModbusModeInterface->GetNumber() ) );
 
@@ -121,6 +132,7 @@ void ModbusAnalyzerSettings::UpdateInterfacesFromSettings()
     mParityInterface->SetNumber( mParity );
     // mShiftOrderInterface->SetNumber( mShiftOrder );
     mInvertedInterface->SetNumber( mInverted );
+    mStartsWithResponseInterface->SetValue( mAssumeDataStartsWithResponse );
     // mUseAutobaudInterface->SetValue( mUseAutobaud );
     mModbusModeInterface->SetNumber( mModbusMode );
 }
@@ -160,6 +172,10 @@ void ModbusAnalyzerSettings::LoadSettings( const char* settings )
     if( text_archive >> *( U32* )&parity )
         mParity = parity;
 
+    bool assumeStartsWithResponse;
+    if( text_archive >> assumeStartsWithResponse )
+        mAssumeDataStartsWithResponse = assumeStartsWithResponse;
+
 
     ClearChannels();
     AddChannel( mInputChannel, "Modbus", true );
@@ -186,6 +202,7 @@ const char* ModbusAnalyzerSettings::SaveSettings()
 
     // added for 1.2.14
     text_archive << mParity;
+    text_archive << mAssumeDataStartsWithResponse;
 
     return SetReturnString( text_archive.GetString() );
 }
